@@ -1,0 +1,1080 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#f8f5ee;
+    --paper2:#efeadd;
+    --card:#ffffff;
+    --ink:#2b2925;
+    --ink-soft:#6e6757;
+    --muted:#a89e8c;
+    --line:#ece5d6;
+    --green:#1f9d62;
+    --green-bright:#37c585;
+    --mint:#e9f7ef;
+    --amber:#cd9626;
+    --red:#df6347;
+    --accent:#1d5d44;
+    --shadow:rgba(58,72,55,.14);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);}
+  body{
+    font-family:'Hanken Grotesk',sans-serif;
+    min-height:100vh;
+    background-image:
+      radial-gradient(circle at 12% -8%, #ffffff 0%, transparent 52%),
+      radial-gradient(circle at 108% 4%, #e9f7ef 0%, transparent 46%),
+      radial-gradient(circle at 50% 120%, #f1f8f3 0%, transparent 55%);
+    background-attachment:fixed;
+    overflow-x:hidden;
+  }
+  /* soft grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+  .app{position:relative;z-index:1;max-width:460px;margin:0 auto;padding:18px 18px 120px;}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 20px;}
+  .brand{display:flex;align-items:center;gap:11px;}
+  .mark{width:38px;height:38px;flex:none;filter:drop-shadow(0 4px 8px rgba(31,157,98,.28));}
+  .wordwrap{display:flex;flex-direction:column;line-height:1;}
+  .logo{
+    font-family:'Fraunces',serif;font-weight:900;font-size:26px;letter-spacing:-.6px;line-height:.95;
+  }
+  .logo .g{
+    background:linear-gradient(135deg,var(--green-bright),var(--green));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .tag{font-size:9.5px;color:var(--muted);letter-spacing:.22em;text-transform:uppercase;font-weight:700;margin-top:3px;}
+  .gear{
+    border:1.5px solid var(--line);background:var(--card);width:42px;height:42px;border-radius:14px;
+    display:grid;place-items:center;cursor:pointer;font-size:19px;box-shadow:0 3px 0 var(--line);color:var(--ink-soft);
+    transition:transform .12s;
+  }
+  .gear:active{transform:translateY(2px);box-shadow:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:var(--card);border:1.5px solid var(--line);border-radius:26px;
+    padding:26px 24px 22px;position:relative;overflow:hidden;
+    box-shadow:0 18px 40px -28px var(--shadow);
+  }
+  .hero .perf{position:absolute;top:0;left:0;right:0;height:14px;display:flex;justify-content:space-around;align-items:flex-end;opacity:.5;}
+  .hero .perf span{width:6px;height:6px;border-radius:50%;background:var(--line);}
+  .hero-label{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:8px;}
+  .chip-days{margin-left:auto;background:var(--paper2);border:1px solid var(--line);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);text-transform:none;}
+  .amount-wrap{display:flex;align-items:flex-start;justify-content:center;gap:4px;margin:10px 0 4px;}
+  .cur{font-family:'Space Mono',monospace;font-size:34px;font-weight:700;margin-top:14px;color:var(--ink-soft);}
+  .amount{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:74px;line-height:.9;letter-spacing:-2px;
+    transition:color .35s;
+  }
+  .amount.pos{color:var(--green);}
+  .amount.warn{color:var(--amber);}
+  .amount.neg{color:var(--red);}
+  .sub{text-align:center;font-size:13px;color:var(--ink-soft);font-weight:500;}
+  .sub b{font-family:'Space Mono',monospace;}
+  .bar{height:9px;background:var(--paper2);border-radius:6px;margin-top:16px;overflow:hidden;border:1px solid var(--line);}
+  .bar > i{display:block;height:100%;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1),background .35s;}
+
+  /* ---------- forecast ---------- */
+  .forecast{
+    margin-top:16px;background:var(--mint);color:#1f4533;border:1.5px solid #cfe9da;border-radius:18px;
+    padding:15px 17px;font-size:13.5px;line-height:1.45;display:flex;gap:11px;align-items:flex-start;
+    box-shadow:0 10px 24px -20px var(--shadow);
+  }
+  .forecast .fc-ic{font-size:19px;line-height:1.2;}
+  .forecast b{font-family:'Space Mono',monospace;color:var(--green);}
+  .forecast.good{background:var(--mint);border-color:#bfe6d2;color:#1c4a35;}
+  .forecast.good b{color:var(--green);}
+  .forecast.bad{background:#fdeee9;border-color:#f6cfc3;color:#7a3320;}
+  .forecast.bad b{color:var(--red);}
+
+  /* ---------- section ---------- */
+  .sec-h{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:26px 4px 11px;}
+  .sec-h .hsub{float:right;text-transform:none;letter-spacing:0;font-weight:700;color:var(--ink-soft);font-family:'Space Mono',monospace;font-size:11px;}
+
+  /* big fixed costs */
+  .fees{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .fee{
+    background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 15px 13px;
+    box-shadow:0 3px 0 var(--line);cursor:pointer;position:relative;overflow:hidden;
+  }
+  .fee:active{transform:translateY(2px);box-shadow:none;}
+  .fee .ftop{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;}
+  .fee .ftop .femo{font-size:18px;}
+  .fee .famt{font-family:'Space Mono',monospace;font-weight:700;font-size:24px;letter-spacing:-1px;margin:8px 0 2px;}
+  .fee .fmeta{font-size:11.5px;color:var(--muted);font-weight:600;min-height:15px;}
+  .fee .fbtn{
+    margin-top:11px;width:100%;border:1.5px solid var(--accent);background:var(--accent);color:#f6ecd6;
+    border-radius:11px;padding:8px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;
+  }
+  .fee.paid{background:linear-gradient(180deg,#eef5ec,#e6efe2);border-color:#bcd6b6;}
+  .fee.paid .famt{color:var(--green);}
+  .fee.paid .fbtn{background:transparent;color:var(--green);border-color:#bcd6b6;}
+  .fee .ftag{position:absolute;top:11px;right:12px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);}
+  .fee.ghost{background:transparent;border-style:dashed;box-shadow:none;}
+  .fee.ghost .famt .dash{color:var(--line);}
+  .fee.ghost .fbtn{background:transparent;color:var(--green);border-color:var(--green);}
+  .fee-hint{font-size:12px;color:var(--ink-soft);line-height:1.45;margin:-4px 4px 12px;}
+
+  /* breakdown */
+  .breakdown{display:flex;flex-direction:column;gap:11px;}
+  .bd{display:flex;flex-direction:column;gap:5px;}
+  .bd .bd-row{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;}
+  .bd .bd-row .bd-em{font-size:15px;}
+  .bd .bd-row .bd-amt{margin-left:auto;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;}
+  .bd .bd-row .bd-pct{font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;}
+  .bd .bd-track{height:8px;background:var(--paper2);border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .bd .bd-track > i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green-bright),var(--green));}
+  .bd-empty{text-align:center;color:var(--muted);font-size:13px;padding:14px;font-style:italic;font-family:'Fraunces',serif;}
+
+  /* quick log */  .quick{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .q{
+    background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 14px;
+    display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);
+    box-shadow:0 3px 0 var(--line);transition:transform .1s,box-shadow .1s;position:relative;overflow:hidden;
+  }
+  .q:active{transform:translateY(3px);box-shadow:0 0 0 var(--line);}
+  .q .emo{font-size:23px;}
+  .q .qt{font-weight:700;font-size:14.5px;line-height:1.1;}
+  .q .qa{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+  .q .ripple{position:absolute;inset:0;background:var(--green);opacity:0;}
+  .q.flash .ripple{animation:flash .5s ease;}
+  @keyframes flash{0%{opacity:.22}100%{opacity:0}}
+
+  /* action buttons */
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px;}
+  .btn{
+    font-family:inherit;font-weight:700;font-size:14px;border-radius:16px;padding:15px 12px;cursor:pointer;
+    border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;gap:8px;
+    box-shadow:0 3px 0 var(--accent);transition:transform .1s,box-shadow .1s;
+  }
+  .btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--accent);}
+  .btn.dark{background:var(--accent);color:#f6ecd6;}
+  .btn.light{background:var(--card);color:var(--ink);}
+  .btn.full{grid-column:1/-1;}
+
+  /* custom add inline */
+  .addrow{display:flex;gap:9px;margin-top:12px;}
+  .addrow input{
+    flex:1;font-family:'Space Mono',monospace;font-size:16px;border:1.5px solid var(--line);background:var(--card);
+    border-radius:14px;padding:13px 14px;color:var(--ink);outline:none;
+  }
+  .addrow input:focus{border-color:var(--accent);}
+  .addrow .amt{flex:0 0 110px;}
+  .q.qnew{border-style:dashed;box-shadow:none;background:transparent;color:var(--muted);}
+  .q.qnew .emo{font-size:21px;color:var(--green);}
+  .q.qnew .qt{color:var(--ink-soft);}
+  .q.qnew:active{transform:translateY(2px);box-shadow:none;}
+  .addrow button{width:54px;border-radius:14px;border:1.5px solid var(--accent);background:var(--accent);color:#f6ecd6;font-size:24px;cursor:pointer;box-shadow:0 3px 0 var(--accent);}
+  .addrow button:active{transform:translateY(3px);box-shadow:none;}
+
+  /* recent */
+  .recent{display:flex;flex-direction:column;gap:8px;}
+  .item{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+    display:flex;align-items:center;gap:11px;animation:pop .25s ease;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .item .ie{font-size:18px;}
+  .item .il{flex:1;font-weight:600;font-size:14px;}
+  .item .it{font-size:11px;color:var(--muted);}
+  .item .ia{font-family:'Space Mono',monospace;font-weight:700;font-size:14px;}
+  .item .del{border:none;background:none;color:var(--muted);cursor:pointer;font-size:17px;padding:2px 4px;}
+  .item .del:active{color:var(--red);}
+  .empty{text-align:center;color:var(--muted);font-size:13px;padding:18px;font-style:italic;font-family:'Fraunces',serif;}
+
+  /* ---------- sheet / modal ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(33,28,18,.46);backdrop-filter:blur(2px);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s;}
+  .scrim.on{opacity:1;pointer-events:auto;}
+  .sheet{
+    position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--paper);border-radius:26px 26px 0 0;
+    max-width:460px;margin:0 auto;padding:22px 20px calc(26px + env(safe-area-inset-bottom));
+    transform:translateY(110%);transition:transform .32s cubic-bezier(.2,.85,.25,1);
+    border-top:1.5px solid var(--line);max-height:88vh;overflow-y:auto;box-shadow:0 -20px 50px -20px var(--shadow);
+  }
+  .sheet.on{transform:translateY(0);}
+  .grab{width:42px;height:5px;border-radius:4px;background:var(--line);margin:0 auto 16px;}
+  .sheet h2{font-family:'Fraunces',serif;font-weight:900;font-size:24px;margin:0 0 4px;letter-spacing:-.5px;}
+  .sheet .lead{color:var(--ink-soft);font-size:13.5px;margin:0 0 18px;line-height:1.4;}
+  label.fld{display:block;margin:0 0 14px;}
+  label.fld .lab{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);margin-bottom:6px;}
+  .inp{width:100%;font-family:'Space Mono',monospace;font-size:17px;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:13px 14px;color:var(--ink);outline:none;}
+  .inp:focus{border-color:var(--accent);}
+  select.inp{font-family:inherit;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .note{font-size:12.5px;color:var(--ink-soft);background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:4px 0 16px;line-height:1.45;}
+  .note b{font-family:'Space Mono',monospace;}
+
+  /* slider */
+  .slv{font-family:'Space Mono',monospace;font-weight:700;font-size:15px;}
+  input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:6px;background:var(--paper2);border:1px solid var(--line);outline:none;margin:10px 0;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);border:3px solid var(--paper);cursor:pointer;box-shadow:0 2px 5px var(--shadow);}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid var(--paper);cursor:pointer;}
+
+  .fixed-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .fx{display:flex;gap:8px;align-items:center;}
+  .fx input{flex:1;}
+  .fx .amt{width:96px;}
+  .fx .x{width:40px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-size:18px;cursor:pointer;color:var(--muted);}
+  .linkbtn{background:none;border:none;color:var(--green);font-weight:700;font-size:13.5px;cursor:pointer;padding:4px 0;font-family:inherit;}
+  .daypick{display:flex;gap:6px;flex-wrap:wrap;}
+  .daypick button{flex:1;min-width:38px;border:1.5px solid var(--line);background:var(--card);border-radius:11px;padding:9px 0;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink-soft);font-family:inherit;}
+  .daypick button.sel{background:var(--green);color:#fff;border-color:var(--green);}
+  .preset-edit{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .preset-edit .pe-emo{width:48px;text-align:center;}
+  .preset-edit .pe-lab{flex:1;}
+  .preset-edit .pe-amt{width:80px;}
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(40px);z-index:80;
+    background:var(--accent);color:#f6ecd6;padding:12px 20px;border-radius:30px;font-weight:600;font-size:14px;
+    opacity:0;transition:transform .3s,opacity .3s;box-shadow:0 10px 30px -8px var(--shadow);pointer-events:none;
+    display:flex;align-items:center;gap:8px;white-space:nowrap;
+  }
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast b{font-family:'Space Mono',monospace;}
+  .toast .undo{background:rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:800;letter-spacing:.08em;}
+
+  /* onboarding cover */
+  .onb{position:fixed;inset:0;z-index:90;background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:30px 26px;max-width:460px;margin:0 auto;}
+  .onb h1{font-family:'Fraunces',serif;font-size:42px;font-weight:900;line-height:1.02;letter-spacing:-1px;margin:0 0 8px;}
+  .onb h1 .g{background:linear-gradient(135deg,var(--green-bright),var(--green));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .onb .bigmark{width:64px;height:64px;margin:0 0 18px;filter:drop-shadow(0 8px 18px rgba(31,157,98,.3));}
+  .onb p{color:var(--ink-soft);font-size:15px;line-height:1.5;margin:0 0 28px;}
+  .hide{display:none !important;}
+</style>
+
+<div class="app" id="app">
+  <header>
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="6" y1="6" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#37c585"/><stop offset="1" stop-color="#1f9d62"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="40" height="40" rx="13" fill="#e9f7ef"/>
+        <circle cx="22" cy="22" r="12.5" stroke="#cfe9da" stroke-width="4"/>
+        <circle cx="22" cy="22" r="12.5" stroke="url(#lg)" stroke-width="4" stroke-linecap="round"
+                stroke-dasharray="58.9 78.54" transform="rotate(-90 22 22)"/>
+        <circle cx="9.5" cy="22" r="2.7" fill="#1f9d62"/>
+      </svg>
+      <div class="wordwrap">
+        <div class="logo">Last<span class="g">100</span></div>
+        <div class="tag">safe to spend</div>
+      </div>
+    </div>
+    <button class="gear" onclick="openSheet('settings')" aria-label="settings">⚙︎</button>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="perf"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="hero-label">Safe to spend today <span class="chip-days" id="chipDays">— days left</span></div>
+    <div class="amount-wrap">
+      <span class="cur" id="curSym">₹</span>
+      <span class="amount pos" id="bigNum">0</span>
+    </div>
+    <div class="sub" id="heroSub">spent <b>₹0</b> of <b>₹0</b> today</div>
+    <div class="bar"><i id="todayBar" style="width:0%"></i></div>
+  </section>
+
+  <!-- FORECAST -->
+  <div class="forecast" id="forecast">
+    <span class="fc-ic">🔮</span>
+    <span id="fcText">Add some money to get started.</span>
+  </div>
+
+  <!-- HOSTEL & MESS BILLS -->
+  <div class="sec-h">Hostel &amp; mess bills <span id="feeReserveTag" class="hsub"></span></div>
+  <div class="fee-hint">They land at the start of the month and you can't predict them. Enter each bill when it arrives — your daily allowance re-spreads instantly across the days left.</div>
+  <div class="fees" id="fees"></div>
+
+  <!-- QUICK LOG -->
+  <div class="sec-h">Quick log — one tap</div>
+  <div class="quick" id="quick"></div>
+
+  <!-- CUSTOM ADD -->
+  <div class="addrow">
+    <input id="customName" type="text" placeholder="What for? (optional)" />
+    <input id="customAmt" class="amt" type="number" inputmode="decimal" placeholder="Amount" />
+    <button onclick="addCustom()" aria-label="add">＋</button>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="btn light" onclick="openSheet('borrow')">↩ Borrow from tomorrow</button>
+    <button class="btn dark" onclick="openSheet('drop')">🎉 Money dropped!</button>
+  </div>
+
+  <!-- RECENT -->
+  <div class="sec-h">Today's spends</div>
+  <div class="recent" id="recent"></div>
+
+  <!-- BREAKDOWN -->
+  <div class="sec-h">Where it's going <span id="bdTotal" class="hsub"></span></div>
+  <div class="breakdown" id="breakdown"></div>
+</div>
+
+<!-- ============ SHEETS ============ -->
+<div class="scrim" id="scrim" onclick="closeSheet()"></div>
+
+<!-- DROP -->
+<div class="sheet" id="sheet-drop">
+  <div class="grab"></div>
+  <h2>Money dropped 🎉</h2>
+  <p class="lead">Parents came through (early, late, whatever). Reset the engine with the new pile.</p>
+  <div class="note" id="dropLeftover"></div>
+  <label class="fld"><span class="lab">Amount received</span>
+    <input class="inp" id="dropAmt" type="number" inputmode="decimal" placeholder="e.g. 4000" /></label>
+  <label class="fld"><span class="lab">Carry over my leftover cash too</span>
+    <select class="inp" id="dropCarry"><option value="1">Yes — add it on top</option><option value="0">No — fresh start</option></select></label>
+  <label class="fld"><span class="lab">Next drop expected on</span>
+    <input class="inp" id="dropDate" type="date" /></label>
+  <button class="btn dark full" onclick="confirmDrop()">Recalculate my days</button>
+</div>
+
+<!-- BORROW -->
+<div class="sheet" id="sheet-borrow">
+  <div class="grab"></div>
+  <h2>Borrow from tomorrow</h2>
+  <p class="lead">Impromptu plans? Pull a little from your future self and spread the pain.</p>
+  <label class="fld"><span class="lab">Extra you need beyond today</span>
+    <input class="inp" id="borrowAmt" type="number" inputmode="decimal" placeholder="e.g. 150" oninput="updateBorrow()" /></label>
+  <label class="fld"><span class="lab">Spread across the next <span class="slv" id="borrowDaysLbl">3</span> days</span>
+    <input type="range" id="borrowDays" min="1" max="7" value="3" oninput="updateBorrow()" /></label>
+  <div class="note" id="borrowPreview">Choose an amount to see the damage.</div>
+  <button class="btn dark full" onclick="confirmBorrow()">Borrow it</button>
+</div>
+
+<!-- FEE EDIT -->
+<div class="sheet" id="sheet-fee">
+  <div class="grab"></div>
+  <h2 id="feeTitle">Hostel bill</h2>
+  <p class="lead">Bill just arrived? Punch in the real amount. It gets held aside and your daily allowance recalculates across the days left in this cycle.</p>
+  <label class="fld"><span class="lab">Bill amount</span>
+    <input class="inp" id="feeAmt" type="number" inputmode="decimal" placeholder="e.g. 2400" oninput="updateFeePreview()" /></label>
+  <label class="fld"><span class="lab">Pay by (optional)</span>
+    <input class="inp" id="feeDue" type="date" /></label>
+  <div class="note" id="feePreview">Enter an amount to see how it changes your daily allowance.</div>
+  <button class="btn dark full" onclick="saveFee()">Save bill</button>
+</div>
+
+<!-- ADD PRESET -->
+<div class="sheet" id="sheet-addpreset">
+  <div class="grab"></div>
+  <h2>New quick button</h2>
+  <p class="lead">Make a one-tap button for something you buy a lot.</p>
+  <div class="row2">
+    <label class="fld"><span class="lab">Icon</span>
+      <input class="inp" id="npEmoji" maxlength="2" placeholder="🍜" /></label>
+    <label class="fld"><span class="lab">Default amount</span>
+      <input class="inp" id="npAmt" type="number" inputmode="decimal" placeholder="0" /></label>
+  </div>
+  <label class="fld"><span class="lab">Name</span>
+    <input class="inp" id="npLabel" placeholder="e.g. Maggi" /></label>
+  <button class="btn dark full" onclick="confirmAddPreset()">Add button</button>
+</div>
+
+<!-- SETTINGS -->
+<div class="sheet" id="sheet-settings">
+  <div class="grab"></div>
+  <h2>Settings</h2>
+  <p class="lead">Tune the engine to your hostel life.</p>
+
+  <div class="row2">
+    <label class="fld"><span class="lab">Currency</span>
+      <select class="inp" id="setCur">
+        <option value="₹">₹ Rupee</option><option value="$">$ Dollar</option>
+        <option value="€">€ Euro</option><option value="£">£ Pound</option><option value="¥">¥ Yen</option>
+      </select></label>
+    <label class="fld"><span class="lab">Next drop date</span>
+      <input class="inp" id="setEnd" type="date" /></label>
+  </div>
+
+  <label class="fld"><span class="lab">Current balance (cash you have now)</span>
+    <input class="inp" id="setBal" type="number" inputmode="decimal" /></label>
+
+  <span class="lab" style="display:block;margin-bottom:8px;">Cheat day — gets 1.5× the budget</span>
+  <div class="daypick" id="cheatPick"></div>
+
+  <div class="sec-h" style="margin:22px 4px 11px;">Upcoming fixed expenses</div>
+  <p class="lead" style="margin-bottom:12px;">Rent, mess bill, subscriptions — money already spoken for. Held aside before the daily math.</p>
+  <div class="fixed-list" id="fixedList"></div>
+  <button class="linkbtn" onclick="addFixedRow()">＋ Add fixed expense</button>
+
+  <div class="sec-h" style="margin:22px 4px 11px;">Quick-log buttons</div>
+  <div id="presetEdit"></div>
+
+  <button class="btn dark full" style="margin-top:18px;" onclick="saveSettings()">Save</button>
+  <button class="linkbtn" style="display:block;margin:14px auto 0;color:var(--red);" onclick="hardReset()">Reset everything</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ONBOARDING -->
+<div class="onb" id="onb">
+  <svg class="bigmark" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><linearGradient id="lg2" x1="6" y1="6" x2="38" y2="38" gradientUnits="userSpaceOnUse"><stop stop-color="#37c585"/><stop offset="1" stop-color="#1f9d62"/></linearGradient></defs>
+    <rect x="2" y="2" width="40" height="40" rx="13" fill="#e9f7ef"/>
+    <circle cx="22" cy="22" r="12.5" stroke="#cfe9da" stroke-width="4"/>
+    <circle cx="22" cy="22" r="12.5" stroke="url(#lg2)" stroke-width="4" stroke-linecap="round" stroke-dasharray="58.9 78.54" transform="rotate(-90 22 22)"/>
+    <circle cx="9.5" cy="22" r="2.7" fill="#1f9d62"/>
+  </svg>
+  <h1>Last<span class="g">100</span></h1>
+  <p>One number. Every day. <br>It tells you what you can spend today without wrecking your week — so your money lasts. Let's set it up.</p>
+  <label class="fld"><span class="lab">How much money do you have right now?</span>
+    <div class="row2">
+      <select class="inp" id="onbCur">
+        <option value="₹">₹ Rupee</option><option value="$">$ Dollar</option>
+        <option value="€">€ Euro</option><option value="£">£ Pound</option><option value="¥">¥ Yen</option>
+      </select>
+      <input class="inp" id="onbBal" type="number" inputmode="decimal" placeholder="e.g. 4000" />
+    </div></label>
+  <label class="fld"><span class="lab">When's your next money drop expected?</span>
+    <input class="inp" id="onbEnd" type="date" /></label>
+  <button class="btn dark full" style="margin-top:8px;" onclick="finishOnboarding()">Start tracking →</button>
+</div>
+
+<script>
+/* ============================================================
+   STATE + STORAGE
+   ============================================================ */
+const KEY = 'float_state_v1';
+const DEFAULT_PRESETS = [
+  {emoji:'🍵', label:'Tea/Coffee', amount:20},
+  {emoji:'🍪', label:'Snacks',     amount:40},
+  {emoji:'🖨️', label:'Printouts',  amount:10},
+  {emoji:'🛺', label:'Ride',       amount:30},
+];
+let S = null;
+
+function freshState(){
+  return {
+    currency:'₹',
+    startingBalance:0,
+    cycleStartISO:todayISO(),
+    cycleEndISO:addDaysISO(todayISO(),30),
+    expenses:[],          // {id,amount,label,emoji,ts}
+    fixed:[],             // {label,amount}
+    cheatDay:null,        // 0..6 (Sun..Sat)
+    cheatMult:1.5,
+    presets:DEFAULT_PRESETS.map(p=>({...p})),
+    borrow:{},            // {ISO: +/- adjustment}
+    hostelFee:{amount:0, dueISO:'', paid:false, expId:null},
+    messFee:{amount:0, dueISO:'', paid:false, expId:null},
+    setupDone:false
+  };
+}
+
+async function loadState(){
+  try{
+    const r = await window.storage.get(KEY);
+    if(r && r.value) return JSON.parse(r.value);
+  }catch(e){ /* not found / first run */ }
+  return null;
+}
+async function saveState(){
+  try{ await window.storage.set(KEY, JSON.stringify(S)); }
+  catch(e){ console.error('save failed', e); }
+}
+
+/* ============================================================
+   DATE HELPERS  (local-date based, no timezone surprises)
+   ============================================================ */
+function todayISO(){ const d=new Date(); return iso(d); }
+function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function parseISO(s){ const [y,m,dd]=s.split('-').map(Number); return new Date(y,m-1,dd); }
+function addDaysISO(s,n){ const d=parseISO(s); d.setDate(d.getDate()+n); return iso(d); }
+function daysBetween(a,b){ return Math.round((parseISO(b)-parseISO(a))/86400000); }
+function dayOfWeek(s){ return parseISO(s).getDay(); }
+function dateOf(ts){ return ts.slice(0,10); }
+function listDates(fromISO,toISO){
+  const out=[]; let n=daysBetween(fromISO,toISO);
+  if(n<0) return [fromISO];
+  for(let i=0;i<=n;i++) out.push(addDaysISO(fromISO,i));
+  return out;
+}
+const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DOW_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+/* ============================================================
+   THE MATH ENGINE
+   ============================================================ */
+function feeReserve(){
+  let r=0;
+  if(S.hostelFee && !S.hostelFee.paid) r+=(+S.hostelFee.amount||0);
+  if(S.messFee && !S.messFee.paid) r+=(+S.messFee.amount||0);
+  return r;
+}
+function compute(){
+  const today = todayISO();
+  const cur = S.currency;
+
+  // expenses split
+  let spentBefore=0, spentToday=0, spentTotal=0;
+  for(const e of S.expenses){
+    const d = dateOf(e.ts);
+    spentTotal += e.amount;
+    if(d < today) spentBefore += e.amount;
+    else if(d === today) spentToday += e.amount;
+    // future-dated (shouldn't happen) ignored from today's math
+  }
+
+  const totalFixed = S.fixed.reduce((s,f)=>s+(+f.amount||0),0) + feeReserve();
+  const balStartToday = S.startingBalance - spentBefore;
+  const distributable = balStartToday - totalFixed;
+
+  // remaining days (today .. cycle end inclusive)
+  let endISO = S.cycleEndISO;
+  if(daysBetween(today,endISO) < 0) endISO = today; // cycle over -> treat as last day
+  const remDates = listDates(today, endISO);
+  const daysLeft = remDates.length;
+
+  // weighted distribution (cheat day = mult)
+  const weightFor = d => (S.cheatDay!=null && dayOfWeek(d)===S.cheatDay) ? S.cheatMult : 1;
+  const sumW = remDates.reduce((s,d)=>s+weightFor(d),0) || 1;
+
+  const todayWeight = weightFor(today);
+  let todayAllowance = distributable * (todayWeight/sumW);
+  todayAllowance += (S.borrow[today]||0);   // borrow adjustments
+  if(todayAllowance < 0) todayAllowance = Math.max(todayAllowance,0); // floor display sanity for allowance base
+
+  const safeToday = todayAllowance - spentToday;
+
+  // forecast
+  const daysElapsed = Math.max(1, daysBetween(S.cycleStartISO,today)+1);
+  const velocity = spentTotal / daysElapsed;            // avg spend/day so far
+  const cashNow = S.startingBalance - spentTotal;       // actual cash in hand
+  const availNow = cashNow - totalFixed;                // spendable after reserving fixed
+  const daysAfterToday = Math.max(0, daysLeft-1);
+
+  return {
+    cur, today, endISO, daysLeft, daysAfterToday,
+    spentToday, spentTotal, totalFixed, balStartToday,
+    todayAllowance, safeToday, velocity, cashNow, availNow
+  };
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+let lastShown = 0;
+function money(n){
+  const r = Math.round(n);
+  return r.toLocaleString('en-IN');
+}
+function render(){
+  const m = compute();
+  document.getElementById('curSym').textContent = m.cur;
+
+  // big number with count animation
+  const big = document.getElementById('bigNum');
+  big.className = 'amount ' + (m.safeToday<=0 ? 'neg' : m.safeToday < m.todayAllowance*0.4 ? 'warn' : 'pos');
+  animateNum(big, lastShown, m.safeToday);
+  lastShown = m.safeToday;
+
+  document.getElementById('chipDays').textContent =
+    m.daysLeft<=1 ? 'last day' : m.daysLeft+' days left';
+
+  document.getElementById('heroSub').innerHTML =
+    `spent <b>${m.cur}${money(m.spentToday)}</b> of <b>${m.cur}${money(m.todayAllowance)}</b> today`;
+
+  // bar
+  const pct = m.todayAllowance>0 ? Math.min(100, (m.spentToday/m.todayAllowance)*100) : (m.spentToday>0?100:0);
+  const bar = document.getElementById('todayBar');
+  bar.style.width = pct+'%';
+  bar.style.background = pct>=100 ? 'var(--red)' : pct>60 ? 'var(--amber)' : 'var(--green-bright)';
+
+  renderForecast(m);
+  renderFees(m);
+  renderQuick();
+  renderRecent(m);
+  renderBreakdown(m);
+}
+
+function renderForecast(m){
+  const box = document.getElementById('forecast');
+  const txt = document.getElementById('fcText');
+  const ic = box.querySelector('.fc-ic');
+
+  if(S.startingBalance<=0){
+    box.className='forecast'; ic.textContent='👋';
+    txt.innerHTML='Tap <b>Money dropped</b> or open settings to enter your balance.';
+    return;
+  }
+  if(m.daysLeft<=1){
+    box.className='forecast'; ic.textContent='🏁';
+    txt.innerHTML = m.cashNow>=0
+      ? `Cycle's basically over with <b>${m.cur}${money(m.cashNow)}</b> in hand. Time for a fresh drop.`
+      : `You've run <b>${m.cur}${money(-m.cashNow)}</b> over. New drop needed!`;
+    return;
+  }
+
+  if(m.velocity<=0.01){
+    box.className='forecast good'; ic.textContent='🌱';
+    txt.innerHTML=`No spends logged yet this cycle. Your daily allowance is <b>${m.cur}${money(m.todayAllowance)}</b>.`;
+    return;
+  }
+
+  // project end balance if velocity continues
+  const projectedEnd = m.availNow - m.velocity*m.daysAfterToday;
+  if(projectedEnd >= 0){
+    box.className='forecast good'; ic.textContent='🎯';
+    const trips = projectedEnd> m.todayAllowance*3 ? ' Weekend trip? 🚆' : projectedEnd>m.todayAllowance ? ' Treat yourself. 🍕' : '';
+    txt.innerHTML = `At this rate, you'll end with <b>${m.cur}${money(projectedEnd)}</b> to spare.${trips}`;
+  } else {
+    // when does cash hit zero?
+    const daysToZero = Math.floor(m.availNow / m.velocity); // from today
+    const zeroISO = addDaysISO(m.today, Math.max(0,daysToZero));
+    const d = parseISO(zeroISO);
+    const dayLabel = d.getDate()+nth(d.getDate());
+    box.className='forecast bad'; ic.textContent='⚠️';
+    if(m.availNow<=0){
+      txt.innerHTML=`You're already past the line. Ease off or grab a drop. Cue the instant noodles. 🍜`;
+    }else{
+      txt.innerHTML = `Warning: keep spending like this and you hit <b>${m.cur}0</b> on the <b>${dayLabel}</b>. Cue the instant noodles. 🍜`;
+    }
+  }
+}
+function nth(n){ if(n>3&&n<21)return'th'; switch(n%10){case 1:return'st';case 2:return'nd';case 3:return'rd';default:return'th';} }
+
+function renderFees(m){
+  const wrap=document.getElementById('fees'); wrap.innerHTML='';
+  const tag=document.getElementById('feeReserveTag');
+  const reserved=feeReserve();
+  tag.textContent = reserved>0 ? `${S.currency}${money(reserved)} held aside` : '';
+  feeCard(wrap,'hostelFee','🏠','Hostel bill',m);
+  feeCard(wrap,'messFee','🍽️','Mess bill',m);
+}
+function feeCard(wrap,key,emoji,name,m){
+  const f=S[key]||{amount:0,dueISO:'',paid:false};
+  const el=document.createElement('div');
+  const empty = !(f.amount>0);
+  el.className='fee'+(f.paid?' paid':'')+(empty?' ghost':'');
+  el.onclick=(e)=>{ if(e.target.classList.contains('fbtn')) return; openFee(key); };
+  let meta='';
+  if(!empty){
+    if(f.paid) meta='paid this cycle ✓';
+    else {
+      // how much per day this bill is shaving off, across remaining days
+      const perDay = m.daysLeft>0 ? f.amount/m.daysLeft : f.amount;
+      meta = `−${S.currency}${money(perDay)}/day held` + (f.dueISO?` · pay by ${dueLabel(f.dueISO)}`:'');
+    }
+  } else {
+    meta = 'not in yet — tap when it lands';
+  }
+  el.innerHTML =
+    (f.paid?'<span class="ftag">paid</span>':'')+
+    `<div class="ftop"><span class="femo">${emoji}</span>${name}</div>
+     <div class="famt">${empty?'<span class="dash">—</span>':S.currency+money(f.amount)}</div>
+     <div class="fmeta">${meta}</div>`+
+    (empty
+      ? `<button class="fbtn" onclick="openFee('${key}')">Enter bill</button>`
+      : `<button class="fbtn" onclick="toggleFeePaid('${key}')">${f.paid?'Undo payment':'Mark paid'}</button>`);
+  wrap.appendChild(el);
+}
+function dueLabel(isoStr){ const d=parseISO(isoStr); return d.getDate()+nth(d.getDate()); }
+
+let feeKey=null;
+function openFee(key){
+  feeKey=key;
+  const f=S[key]||{amount:0,dueISO:''};
+  document.getElementById('feeTitle').textContent = key==='hostelFee'?'Hostel bill':'Mess bill';
+  document.getElementById('feeAmt').value = f.amount||'';
+  document.getElementById('feeDue').value = f.dueISO||'';
+  openSheet('fee');
+  updateFeePreview();
+}
+function updateFeePreview(){
+  if(!feeKey) return;
+  const newAmt=parseFloat(document.getElementById('feeAmt').value)||0;
+  const before=compute().todayAllowance;
+  // temporarily apply to see the recalculated daily allowance
+  const orig={...S[feeKey]};
+  S[feeKey]=Object.assign({}, S[feeKey], {amount:newAmt, paid:false});
+  const after=compute().todayAllowance;
+  S[feeKey]=orig;
+  const box=document.getElementById('feePreview');
+  if(newAmt<=0){ box.innerHTML='Enter an amount to see how it changes your daily allowance.'; return; }
+  box.innerHTML=`Daily allowance: <b>${S.currency}${money(before)}</b> → <b>${S.currency}${money(after)}</b> for the rest of this cycle.`;
+}
+function saveFee(){
+  if(!feeKey) return;
+  const amt=parseFloat(document.getElementById('feeAmt').value)||0;
+  const due=document.getElementById('feeDue').value||'';
+  const cur=S[feeKey]||{paid:false,expId:null};
+  // if this bill was already marked paid, keep the linked expense in sync
+  if(cur.paid && cur.expId){
+    const ex=S.expenses.find(e=>e.id===cur.expId);
+    if(ex) ex.amount=amt;
+  }
+  S[feeKey]=Object.assign({paid:false,expId:null}, cur, {amount:amt, dueISO:due});
+  saveState(); closeSheet(); render();
+  toast('Bill saved ✓');
+}
+function toggleFeePaid(key){
+  const f=S[key]; if(!f) return;
+  const label = key==='hostelFee'?'Hostel bill':'Mess bill';
+  const emoji = key==='hostelFee'?'🏠':'🍽️';
+  if(!f.paid){
+    const id='e'+Date.now()+Math.random().toString(36).slice(2,6);
+    S.expenses.push({id, amount:+f.amount, label, emoji, ts:new Date().toISOString()});
+    f.paid=true; f.expId=id;
+    toast(`${emoji} ${label} paid · −${S.currency}${money(f.amount)}`);
+  } else {
+    if(f.expId) S.expenses=S.expenses.filter(e=>e.id!==f.expId);
+    f.paid=false; f.expId=null;
+    toast(`${label} back to held aside`);
+  }
+  saveState(); render();
+}
+
+function renderQuick(){
+  const wrap = document.getElementById('quick');
+  wrap.innerHTML='';
+  S.presets.forEach((p,i)=>{
+    const b=document.createElement('button');
+    b.className='q'; b.onclick=()=>quickLog(i,b);
+    b.innerHTML=`<span class="ripple"></span><span class="emo">${p.emoji}</span>
+      <span><span class="qt">${escapeHtml(p.label)}</span><br><span class="qa">${S.currency}${money(p.amount)}</span></span>`;
+    wrap.appendChild(b);
+  });
+  const add=document.createElement('button');
+  add.className='q qnew'; add.onclick=()=>openSheet('addpreset');
+  add.innerHTML=`<span class="emo">＋</span><span><span class="qt">New button</span><br><span class="qa">add a quick-log</span></span>`;
+  wrap.appendChild(add);
+}
+
+function renderRecent(m){
+  const wrap=document.getElementById('recent');
+  const todays = S.expenses.filter(e=>dateOf(e.ts)===m.today).slice().reverse();
+  if(!todays.length){ wrap.innerHTML='<div class="empty">Nothing logged yet today. Keep it that way 😎</div>'; return; }
+  wrap.innerHTML='';
+  todays.forEach(e=>{
+    const t=new Date(e.ts);
+    const el=document.createElement('div');
+    el.className='item';
+    el.innerHTML=`<span class="ie">${e.emoji||'💸'}</span>
+      <span class="il">${escapeHtml(e.label)}<br><span class="it">${pad(t.getHours())}:${pad(t.getMinutes())}</span></span>
+      <span class="ia">−${S.currency}${money(e.amount)}</span>
+      <button class="del" onclick="delExpense('${e.id}')">✕</button>`;
+    wrap.appendChild(el);
+  });
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderBreakdown(m){
+  const wrap=document.getElementById('breakdown');
+  const tag=document.getElementById('bdTotal');
+  // group whole-cycle expenses by label
+  const groups={};
+  for(const e of S.expenses){
+    const k=e.label||'Other';
+    if(!groups[k]) groups[k]={amount:0,emoji:e.emoji||'💸'};
+    groups[k].amount+=e.amount;
+  }
+  const rows=Object.entries(groups).map(([label,v])=>({label,...v})).sort((a,b)=>b.amount-a.amount);
+  const total=rows.reduce((s,r)=>s+r.amount,0);
+  const daysElapsed=Math.max(1,daysBetween(S.cycleStartISO,m.today)+1);
+
+  if(!rows.length){ tag.textContent=''; wrap.innerHTML='<div class="bd-empty">No spends this cycle yet.</div>'; return; }
+  tag.textContent=`${m.cur}${money(total)} · ${m.cur}${money(total/daysElapsed)}/day avg`;
+
+  const max=rows[0].amount||1;
+  wrap.innerHTML='';
+  rows.forEach(r=>{
+    const pct=Math.round((r.amount/total)*100);
+    const el=document.createElement('div'); el.className='bd';
+    el.innerHTML=`
+      <div class="bd-row"><span class="bd-em">${r.emoji}</span>${escapeHtml(r.label)}
+        <span class="bd-pct">${pct}%</span>
+        <span class="bd-amt">${m.cur}${money(r.amount)}</span></div>
+      <div class="bd-track"><i style="width:${Math.max(4,(r.amount/max)*100)}%"></i></div>`;
+    wrap.appendChild(el);
+  });
+}
+
+function animateNum(el, from, to){
+  from = isFinite(from)?from:0;
+  const dur=420, t0=performance.now();
+  function step(t){
+    const k=Math.min(1,(t-t0)/dur);
+    const e=1-Math.pow(1-k,3);
+    el.textContent = money(from+(to-from)*e);
+    if(k<1) requestAnimationFrame(step);
+    else el.textContent = money(to);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+function logExpense(amount, label, emoji){
+  if(!(amount>0)) return null;
+  const id='e'+Date.now()+Math.random().toString(36).slice(2,6);
+  S.expenses.push({id, amount:+amount, label, emoji, ts:new Date().toISOString()});
+  saveState(); render();
+  return id;
+}
+function quickLog(i, btn){
+  const p=S.presets[i];
+  btn.classList.remove('flash'); void btn.offsetWidth; btn.classList.add('flash');
+  const id=logExpense(p.amount, p.label, p.emoji);
+  toast(`${p.emoji} ${p.label} · −${S.currency}${money(p.amount)}`, id);
+}
+function addCustom(){
+  const inp=document.getElementById('customAmt');
+  const nameInp=document.getElementById('customName');
+  const v=parseFloat(inp.value);
+  if(!(v>0)){ inp.focus(); return; }
+  const label=(nameInp.value||'').trim()||'Other';
+  const id=logExpense(v,label,'💸');
+  toast(`${label} · −${S.currency}${money(v)}`, id);
+  inp.value=''; nameInp.value='';
+}
+function delExpense(id){
+  S.expenses=S.expenses.filter(e=>e.id!==id);
+  saveState(); render();
+}
+
+/* ----- borrow ----- */
+function updateBorrow(){
+  const amt=parseFloat(document.getElementById('borrowAmt').value)||0;
+  const days=+document.getElementById('borrowDays').value;
+  document.getElementById('borrowDaysLbl').textContent=days;
+  const per = amt>0 ? amt/days : 0;
+  const prev=document.getElementById('borrowPreview');
+  if(amt<=0){ prev.innerHTML='Choose an amount to see the damage.'; return; }
+  prev.innerHTML=`Adds <b>${S.currency}${money(amt)}</b> to today, then trims <b>${S.currency}${money(per)}</b> off each of the next <b>${days}</b> days. Budget stays intact.`;
+}
+function confirmBorrow(){
+  const amt=parseFloat(document.getElementById('borrowAmt').value)||0;
+  const days=+document.getElementById('borrowDays').value;
+  if(!(amt>0)) return;
+  const today=todayISO();
+  const per=amt/days;
+  S.borrow[today]=(S.borrow[today]||0)+amt;
+  for(let i=1;i<=days;i++){
+    const d=addDaysISO(today,i);
+    S.borrow[d]=(S.borrow[d]||0)-per;
+  }
+  saveState(); closeSheet(); render();
+  toast(`Borrowed ${S.currency}${money(amt)} from tomorrow ↩`);
+}
+
+/* ----- money drop ----- */
+function confirmDrop(){
+  const amt=parseFloat(document.getElementById('dropAmt').value)||0;
+  const carry=document.getElementById('dropCarry').value==='1';
+  const date=document.getElementById('dropDate').value || addDaysISO(todayISO(),30);
+  if(!(amt>0)){ return; }
+  const m=compute();
+  const leftover = carry ? Math.max(0,m.cashNow) : 0;
+  S.startingBalance = leftover + amt;
+  S.expenses=[];
+  S.borrow={};
+  if(S.hostelFee){ S.hostelFee={amount:0,dueISO:'',paid:false,expId:null}; }
+  if(S.messFee){ S.messFee={amount:0,dueISO:'',paid:false,expId:null}; }
+  S.cycleStartISO=todayISO();
+  S.cycleEndISO=date;
+  saveState(); closeSheet(); lastShown=0; render();
+  toast(`🎉 ${S.currency}${money(S.startingBalance)} loaded`);
+}
+
+/* ============================================================
+   SHEETS
+   ============================================================ */
+let openName=null;
+function openSheet(name){
+  openName=name;
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('sheet-'+name).classList.add('on');
+  if(name==='drop') prepDrop();
+  if(name==='borrow') prepBorrow();
+  if(name==='addpreset') prepAddPreset();
+  if(name==='settings') prepSettings();
+}
+function closeSheet(){
+  if(!openName) return;
+  document.getElementById('scrim').classList.remove('on');
+  document.getElementById('sheet-'+openName).classList.remove('on');
+  openName=null;
+}
+function prepDrop(){
+  const m=compute();
+  document.getElementById('dropLeftover').innerHTML =
+    m.cashNow>=0 ? `You've got <b>${S.currency}${money(m.cashNow)}</b> left in hand right now.`
+                 : `You're <b>${S.currency}${money(-m.cashNow)}</b> in the red right now.`;
+  document.getElementById('dropAmt').value='';
+  document.getElementById('dropDate').value=addDaysISO(todayISO(),30);
+}
+function prepBorrow(){
+  document.getElementById('borrowAmt').value='';
+  document.getElementById('borrowDays').value=3;
+  updateBorrow();
+}
+function prepAddPreset(){
+  document.getElementById('npEmoji').value='';
+  document.getElementById('npLabel').value='';
+  document.getElementById('npAmt').value='';
+}
+function confirmAddPreset(){
+  const emoji=(document.getElementById('npEmoji').value||'').trim()||'💸';
+  const label=(document.getElementById('npLabel').value||'').trim()||'Item';
+  const amount=parseFloat(document.getElementById('npAmt').value)||0;
+  S.presets.push({emoji,label,amount});
+  saveState(); closeSheet(); render();
+  toast(`${emoji} ${label} added`);
+}
+
+/* ----- settings ----- */
+function prepSettings(){
+  document.getElementById('setCur').value=S.currency;
+  document.getElementById('setEnd').value=S.cycleEndISO;
+  document.getElementById('setBal').value=Math.round(compute().cashNow);
+  // cheat day picker
+  const cp=document.getElementById('cheatPick'); cp.innerHTML='';
+  const none=document.createElement('button'); none.textContent='None';
+  none.className=S.cheatDay==null?'sel':''; none.onclick=()=>setCheat(null); cp.appendChild(none);
+  DOW.forEach((d,i)=>{
+    const b=document.createElement('button'); b.textContent=d;
+    b.className=S.cheatDay===i?'sel':''; b.onclick=()=>setCheat(i); cp.appendChild(b);
+  });
+  // fixed list
+  renderFixedRows();
+  // presets
+  renderPresetEdit();
+}
+let tmpCheat;
+function setCheat(i){ tmpCheat=i; S.cheatDay=i; prepSettings(); }
+function renderFixedRows(){
+  const list=document.getElementById('fixedList'); list.innerHTML='';
+  S.fixed.forEach((f,i)=>{
+    const row=document.createElement('div'); row.className='fx';
+    row.innerHTML=`<input class="inp" data-fi="${i}" data-k="label" value="${escapeHtml(f.label)}" placeholder="e.g. Mess bill"/>
+      <input class="inp amt" data-fi="${i}" data-k="amount" type="number" value="${f.amount}" placeholder="0"/>
+      <button class="x" onclick="rmFixed(${i})">✕</button>`;
+    list.appendChild(row);
+  });
+}
+function addFixedRow(){ S.fixed.push({label:'',amount:0}); renderFixedRows(); }
+function rmFixed(i){ collectFixed(); S.fixed.splice(i,1); renderFixedRows(); }
+function collectFixed(){
+  document.querySelectorAll('#fixedList .fx').forEach((row,idx)=>{
+    const lab=row.querySelector('[data-k=label]').value;
+    const amt=parseFloat(row.querySelector('[data-k=amount]').value)||0;
+    if(S.fixed[idx]){ S.fixed[idx]={label:lab,amount:amt}; }
+  });
+}
+function renderPresetEdit(){
+  const wrap=document.getElementById('presetEdit'); wrap.innerHTML='';
+  S.presets.forEach((p,i)=>{
+    const row=document.createElement('div'); row.className='preset-edit';
+    row.innerHTML=`<input class="inp pe-emo" data-pi="${i}" data-k="emoji" value="${escapeHtml(p.emoji)}"/>
+      <input class="inp pe-lab" data-pi="${i}" data-k="label" value="${escapeHtml(p.label)}"/>
+      <input class="inp pe-amt" data-pi="${i}" data-k="amount" type="number" value="${p.amount}"/>
+      <button class="x" onclick="rmPreset(${i})">✕</button>`;
+    wrap.appendChild(row);
+  });
+  const link=document.createElement('button');
+  link.className='linkbtn'; link.textContent='＋ Add quick button';
+  link.onclick=addPresetRow;
+  wrap.appendChild(link);
+}
+function rmPreset(i){ collectPresets(); S.presets.splice(i,1); renderPresetEdit(); }
+function addPresetRow(){ collectPresets(); S.presets.push({emoji:'💸',label:'',amount:0}); renderPresetEdit(); }
+function collectPresets(){
+  document.querySelectorAll('#presetEdit .preset-edit').forEach((row,idx)=>{
+    const emoji=row.querySelector('[data-k=emoji]').value||'💸';
+    const label=row.querySelector('[data-k=label]').value||'Item';
+    const amount=parseFloat(row.querySelector('[data-k=amount]').value)||0;
+    if(S.presets[idx]) S.presets[idx]={emoji,label,amount};
+  });
+}
+function saveSettings(){
+  collectFixed(); collectPresets();
+  S.fixed=S.fixed.filter(f=>f.label.trim()||f.amount);
+  S.presets=S.presets.filter(p=>p.amount>0 || (p.label.trim() && p.label!=='Item'));
+  if(!S.presets.length) S.presets=DEFAULT_PRESETS.map(p=>({...p}));
+  S.currency=document.getElementById('setCur').value;
+  S.cycleEndISO=document.getElementById('setEnd').value||S.cycleEndISO;
+  const newBal=parseFloat(document.getElementById('setBal').value);
+  if(isFinite(newBal)){
+    // set current cash = newBal by adjusting startingBalance relative to spends
+    const spentTotal=S.expenses.reduce((s,e)=>s+e.amount,0);
+    S.startingBalance=newBal+spentTotal;
+  }
+  saveState(); closeSheet(); lastShown=0; render();
+  toast('Saved ✓');
+}
+function hardReset(){
+  if(!confirm('Wipe everything and start fresh?')) return;
+  S=freshState();
+  saveState(); closeSheet();
+  document.getElementById('onb').classList.remove('hide');
+  prepOnboarding();
+}
+
+/* ============================================================
+   ONBOARDING
+   ============================================================ */
+function prepOnboarding(){
+  document.getElementById('onbEnd').value=addDaysISO(todayISO(),30);
+}
+function finishOnboarding(){
+  const bal=parseFloat(document.getElementById('onbBal').value)||0;
+  S.currency=document.getElementById('onbCur').value;
+  S.startingBalance=bal;
+  S.cycleStartISO=todayISO();
+  S.cycleEndISO=document.getElementById('onbEnd').value||addDaysISO(todayISO(),30);
+  S.setupDone=true;
+  saveState();
+  document.getElementById('onb').classList.add('hide');
+  lastShown=0; render();
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastT;
+function toast(msg, undoId){
+  const t=document.getElementById('toast');
+  if(undoId){
+    t.innerHTML=`<span>${msg}</span><span class="undo">UNDO</span>`;
+    t.style.cursor='pointer';
+    t.onclick=()=>{ delExpense(undoId); t.classList.remove('on'); toast('Removed ✓'); };
+  } else {
+    t.innerHTML=msg; t.style.cursor='default'; t.onclick=null;
+  }
+  t.classList.add('on');
+  clearTimeout(toastT); toastT=setTimeout(()=>{ t.classList.remove('on'); t.onclick=null; },2600);
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(async function init(){
+  S = await loadState();
+  if(!S){ S=freshState(); }
+  // migrate missing keys
+  S = Object.assign(freshState(), S);
+  if(!S.setupDone || S.startingBalance<=0){
+    prepOnboarding();
+  }else{
+    document.getElementById('onb').classList.add('hide');
+  }
+  render();
+})();
+</script>

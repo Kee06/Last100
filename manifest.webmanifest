@@ -1,0 +1,32 @@
+{
+  "name": "Last100 — daily safe-to-spend",
+  "short_name": "Last100",
+  "description": "One number a day so your money lasts the month.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f1e8d6",
+  "theme_color": "#2f7d4f",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Money dropped",
+      "short_name": "Money in",
+      "description": "Add new money and recalculate",
+      "url": "./?action=drop",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Quick log first button",
+      "short_name": "Quick log",
+      "description": "Log your top quick-spend in one tap",
+      "url": "./?action=log&i=0",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
